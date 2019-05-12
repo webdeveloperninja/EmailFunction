@@ -5,3 +5,4 @@ steps:
     command: build
     projects: '**/*.csproj'
     arguments: '--configuration Release'
+- task: PublishBuildArtifacts@1
