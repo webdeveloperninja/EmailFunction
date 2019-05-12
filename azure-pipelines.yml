@@ -16,6 +16,14 @@ steps:
     rootFolderOrFile: "$(System.DefaultWorkingDirectory)/publish_output"
     includeRootFolder: true
     archiveFile: "$(System.DefaultWorkingDirectory)/build$(Build.BuildId).zip"
+- script: dotnet test EmailFunctionTests --logger trx
+  displayName: Run Tests
+- task: PublishTestResults@2
+  displayName: Publish Test Results
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(System.DefaultWorkingDirectory)/build$(Build.BuildId).zip'
