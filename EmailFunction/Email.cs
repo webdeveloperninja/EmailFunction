@@ -5,7 +5,9 @@ namespace EmailFunction
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Azure.WebJobs;
     using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using System.IO;
     using System.Threading.Tasks;
 
     [DependencyInjectionConfig(typeof(DIConfig))]
@@ -17,6 +19,7 @@ namespace EmailFunction
             [Inject]EmailController controller,
             ILogger log)
         {
+      
             return await controller.Execute(req);
         }
     }

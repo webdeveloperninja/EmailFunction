@@ -17,8 +17,7 @@
     {
         public async Task<string> Handle(SendEmailRequest request, CancellationToken cancellationToken)
         {
-            //var apiKey = Environment.GetEnvironmentVariable("SendGrid_Key");
-            var apiKey = "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";
+            var apiKey = Environment.GetEnvironmentVariable("SendGrid_Key", EnvironmentVariableTarget.Process);
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("robert.smith.developer@gmail.com");
             var subject = "Sending with Twilio SendGrid is Fun";
