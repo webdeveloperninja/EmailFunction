@@ -5,7 +5,6 @@
     using MediatR;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using System;
     using System.Threading.Tasks;
 
     public class EmailController
@@ -26,7 +25,10 @@
             var response = await _mediatr.Send(new SendEmailRequest
             {
                 To = emailRequest.To,
-                Body = emailRequest.Body
+                Body = emailRequest.Body,
+                Subject = emailRequest.Subject,
+                PlainTextContent = emailRequest.PlainTextContent,
+                HtmlContent = emailRequest.HtmlContent
             });
 
             return (ActionResult)new OkObjectResult($"Hello");

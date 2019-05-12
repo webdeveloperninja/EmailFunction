@@ -6,6 +6,7 @@
     using EmailFunction.Models;
     using MediatR;
     using System.Reflection;
+    using EmailFunction.Infrastructure;
 
     public class DIConfig
     {
@@ -15,6 +16,8 @@
             {
                 builder.RegisterType<EmailController>();
                 builder.RegisterType<EmailRequestConverter>();
+                builder.RegisterType<SendGrid>().As<IMessageProcessor>();
+
                 builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
 
                 var mediatrOpenTypes = new[]

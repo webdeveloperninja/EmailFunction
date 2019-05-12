@@ -10,8 +10,7 @@
         public async Task<EmailRequest> Convert(HttpRequest request)
         {
             var requestBody = await new StreamReader(request.Body).ReadToEndAsync();
-            var emailRequest = JsonConvert.DeserializeObject<EmailRequest>(requestBody);
-            return emailRequest;
+            return JsonConvert.DeserializeObject<EmailRequest>(requestBody);
         }
     }
 }
