@@ -6,7 +6,6 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: True
-- task: PublishBuildArtifacts@1
 - script: dotnet test EmailFunctionTests --logger trx
   displayName: Run Tests
 - task: PublishTestResults@2
@@ -15,3 +14,5 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifacts
