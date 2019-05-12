@@ -1,11 +1,15 @@
 steps:
+- script: |
+    dotnet restore
+    dotnet build --configuration Release
 - task: DotNetCoreCLI@2
-  displayName: Build
   inputs:
-    command: build
-    projects: '**/*.csproj'
+    command: publish
     arguments: '--configuration Release --output publish_output'
-    zipAfterPublish: True
+    projects: '*.csproj'
+    publishWebProjects: false
+    modifyOutputPath: true
+    zipAfterPublish: false
 - script: dotnet test EmailFunctionTests --logger trx
   displayName: Run Tests
 - task: PublishTestResults@2
