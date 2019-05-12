@@ -1,5 +1,6 @@
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
+    projects: './EmailFunction/EmailFunction.csproj'
     feedsToUse: 'select'
     versioningScheme: 'off'
