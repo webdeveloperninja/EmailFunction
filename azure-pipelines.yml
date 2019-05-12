@@ -6,7 +6,7 @@ steps:
   inputs:
     command: publish
     arguments: '--configuration Release --output $(System.DefaultWorkingDirectory)/publish_output'
-    projects: '**/*.csproj'
+    projects: '**/*EmailFunction.csproj'
     publishWebProjects: false
     modifyOutputPath: true
     zipAfterPublish: false
