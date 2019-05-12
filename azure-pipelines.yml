@@ -4,7 +4,7 @@ steps:
   inputs:
     command: build
     projects: '**/*.csproj'
-    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
+    arguments: '--configuration Release --output publish_output'
     zipAfterPublish: True
 - script: dotnet test EmailFunctionTests --logger trx
   displayName: Run Tests
@@ -17,8 +17,10 @@ steps:
 - task: ArchiveFiles@2
   displayName: "Archive files"
   inputs:
-    rootFolderOrFile: "$(System.DefaultWorkingDirectory)"
+    rootFolderOrFile: "$(System.DefaultWorkingDirectory)/publish_output/s"
     includeRootFolder: false
-    archiveFile: "$(System.DefaultWorkingDirectory)/$(Build.BuildId).zip"
+    archiveFile: "$(System.DefaultWorkingDirectory)/build$(Build.BuildId).zip"
 - task: PublishBuildArtifacts@1
-  displayName: Publish Artifacts
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/$(Build.BuildId).zip'
+    name: 'drop'
