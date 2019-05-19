@@ -15,7 +15,7 @@
             DependencyInjection.Initialize(builder =>
             {
                 builder.RegisterType<EmailController>();
-                builder.RegisterType<EmailRequestConverter>();
+                builder.RegisterType<EmailRequestConverter>().As<IRequestConverter>();
                 builder.RegisterType<SendGrid>().As<IMessageProcessor>();
 
                 builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
