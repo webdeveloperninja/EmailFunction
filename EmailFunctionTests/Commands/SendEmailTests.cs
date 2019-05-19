@@ -20,10 +20,8 @@
             var request = new SendEmailRequest
             {
                 To = "Robert@test.com",
-                Body = "Body",
                 Subject = "Subject",
                 PlainTextContent = "Plain Text",
-                HtmlContent = "<h1>Content</h1"
             };
 
             var expected = new MessageRequest
@@ -31,15 +29,13 @@
                 To = request.To,
                 From = fromEmail,
                 Subject = request.Subject,
-                PlainTextContent = request.PlainTextContent,
-                HtmlContent = request.HtmlContent
+                Content = request.PlainTextContent,
             };
 
             Func<MessageRequest, bool> matchesExpected = r => r.To == expected.To &&
                                                                 r.From == expected.From &&
                                                                 r.Subject == expected.Subject &&
-                                                                r.PlainTextContent == expected.PlainTextContent &&
-                                                                r.HtmlContent == expected.HtmlContent;
+                                                                r.Content == expected.Content;
 
             messageProcessorMock.Setup(processor => processor.Send(It.IsAny<MessageRequest>())).ReturnsAsync(It.IsAny<SendGrid.Response>()).Verifiable();
 

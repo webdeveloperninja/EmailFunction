@@ -19,10 +19,8 @@ namespace EmailFunctionTests
             var emailRequest = new EmailRequest()
             {
                 To = "Robert",
-                Body = "Body",
                 Subject = "Subject",
                 PlainTextContent = "Plain Text",
-                HtmlContent = "<h1>Content</h1>"
             };
 
             var converterMock = new Mock<IRequestConverter>();
@@ -31,17 +29,13 @@ namespace EmailFunctionTests
             var expected = new SendEmailRequest
             {
                 To = emailRequest.To,
-                Body = emailRequest.Body,
                 Subject = emailRequest.Subject,
                 PlainTextContent = emailRequest.PlainTextContent,
-                HtmlContent = emailRequest.HtmlContent
             };
 
             Func<SendEmailRequest, bool> matchesExpected = request => request.To == expected.To &&
-                                                                        request.Body == expected.Body &&
                                                                         request.Subject == expected.Subject &&
-                                                                        request.PlainTextContent == expected.PlainTextContent &&
-                                                                        request.HtmlContent == expected.HtmlContent;
+                                                                        request.PlainTextContent == expected.PlainTextContent;
 
             converterMock.Setup(c => c.Convert(It.IsAny<HttpRequest>())).ReturnsAsync(emailRequest);
             mediatorMock.Setup(m => m.Send(It.IsAny<SendEmailRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync("Yay").Verifiable();

@@ -1,6 +1,7 @@
 ﻿namespace EmailFunction
 {
     using EmailFunction.Commands;
+    using EmailFunction.Exceptions;
     using EmailFunction.Models;
     using MediatR;
     using Microsoft.AspNetCore.Http;
@@ -20,18 +21,24 @@
 
         public async Task<ActionResult> Execute(HttpRequest req)
         {
-            var emailRequest = await converter.Convert(req);
+            var emailRequest = new EmailRequest();
+
+            try
+            {
+                emailRequest = await emailRequest.Create(req, converter);
+            } catch (RequestConverterException)
+            {
+                return new BadRequestObjectResult($"Could not process your email request");
+            }
 
             var response = await _mediatr.Send(new SendEmailRequest
             {
                 To = emailRequest.To,
-                Body = emailRequest.Body,
                 Subject = emailRequest.Subject,
                 PlainTextContent = emailRequest.PlainTextContent,
-                HtmlContent = emailRequest.HtmlContent
             });
 
-            return (ActionResult)new OkObjectResult($"Hello");
+            return (ActionResult)new OkObjectResult(response);
         }
     }
 }

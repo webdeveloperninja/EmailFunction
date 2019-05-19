@@ -8,10 +8,8 @@
     public class SendEmailRequest : IRequest<string>
     {
         public string To { get; set; }
-        public string Body { get; set; }
         public string Subject { get; set; }
         public string PlainTextContent { get; set; }
-        public string HtmlContent { get; set; }
     }
 
     public class SendEmailHandler : IRequestHandler<SendEmailRequest, string>
@@ -32,13 +30,12 @@
                 To = request.To,
                 From = fromEmail,
                 Subject = request.Subject,
-                PlainTextContent = request.PlainTextContent,
-                HtmlContent = request.HtmlContent
+                Content = request.PlainTextContent
             };
 
             var response = await _processor.Send(messageRequest);
 
-            return "Ok";
+            return $"Successfully sent email to {request.To}";
         }
     }
 }
