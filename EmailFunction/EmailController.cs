@@ -9,18 +9,18 @@
 
     public class EmailController
     {
-        private EmailRequestConverter emailRequestConverter { get; set; }
+        private IRequestConverter converter { get; set; }
         private IMediator _mediatr { get; set; }
 
-        public EmailController(EmailRequestConverter converter, IMediator mediatr)
+        public EmailController(IRequestConverter converter, IMediator mediatr)
         {
-            emailRequestConverter = converter;
+            this.converter = converter;
             _mediatr = mediatr;
         }
 
         public async Task<ActionResult> Execute(HttpRequest req)
         {
-            var emailRequest = await emailRequestConverter.Convert(req);
+            var emailRequest = await converter.Convert(req);
 
             var response = await _mediatr.Send(new SendEmailRequest
             {

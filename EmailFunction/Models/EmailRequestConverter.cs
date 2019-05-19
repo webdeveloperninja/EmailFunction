@@ -5,7 +5,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    public class EmailRequestConverter
+    public class EmailRequestConverter : IRequestConverter
     {
         public async Task<EmailRequest> Convert(HttpRequest request)
         {
