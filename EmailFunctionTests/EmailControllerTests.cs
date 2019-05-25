@@ -2,13 +2,16 @@ namespace EmailFunctionTests
 {
     using EmailFunction;
     using EmailFunction.Commands;
+    using EmailFunction.Exceptions;
     using EmailFunction.Models;
     using MediatR;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
 
     [TestClass]
     public class EmailControllerTests
@@ -44,6 +47,21 @@ namespace EmailFunctionTests
             sut.Execute(It.IsAny<HttpRequest>());
 
             mediatorMock.Verify(m => m.Send(It.Is<SendEmailRequest>(r => matchesExpected(r)), It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [TestMethod]
+        public async Task Execute_WhenEmailRequestThrowsException_ThrowsBadRequest()
+        {
+            var converterMock = new Mock<IRequestConverter>();
+            var mediatrMock = new Mock<IMediator>();
+
+            converterMock.Setup(c => c.Convert(It.IsAny<HttpRequest>())).ThrowsAsync(new RequestConverterException(It.IsAny<HttpRequest>()));
+
+            var sut = new EmailController(converterMock.Object, mediatrMock.Object);
+
+            var result = await sut.Execute(It.IsAny<HttpRequest>());
+
+            Assert.AreEqual(typeof(BadRequestObjectResult), result.GetType());
         }
     }
 }
