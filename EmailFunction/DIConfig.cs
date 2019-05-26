@@ -2,11 +2,12 @@
 {
     using Autofac;
     using AzureFunctions.Autofac.Configuration;
-    using EmailFunction.Commands;
-    using EmailFunction.Models;
+    using EmailFunction.Controllers;
+    using EmailFunction.Core.Entities;
+    using EmailFunction.Core.Interfaces;
+    using EmailFunction.Infrastructure;
     using MediatR;
     using System.Reflection;
-    using EmailFunction.Infrastructure;
 
     public class DIConfig
     {
@@ -15,8 +16,9 @@
             DependencyInjection.Initialize(builder =>
             {
                 builder.RegisterType<EmailController>();
-                builder.RegisterType<EmailRequestConverter>().As<IRequestConverter>();
-                builder.RegisterType<SendGrid>().As<IMessageProcessor>();
+                builder.RegisterType<RequestDeserializer>().As<IRequestDeserializer>();
+                builder.RegisterType<SendGridMessageProcessor>().As<IMessageProcessor>();
+                builder.RegisterType<Configuration>().As<IConfiguration>();
 
                 builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
 
@@ -29,7 +31,7 @@
                 foreach (var mediatrOpenType in mediatrOpenTypes)
                 {
                     builder
-                        .RegisterAssemblyTypes(typeof(SendEmailRequest).GetTypeInfo().Assembly)
+                        .RegisterAssemblyTypes(typeof(EmailRequest).GetTypeInfo().Assembly)
                         .AsClosedTypesOf(mediatrOpenType)
                         .AsImplementedInterfaces();
                 }
