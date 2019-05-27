@@ -1,10 +1,10 @@
 ﻿namespace EmailFunction.Controllers
 {
+    using EmailFunction.Core.DTO;
     using EmailFunction.Core.Entities;
+    using EmailFunction.Core.Exceptions;
     using EmailFunction.Core.Interfaces;
     using MediatR;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
 
     public class EmailController
@@ -22,20 +22,24 @@
             _configuration = configuration;
         }
 
-        public async Task<ActionResult> Execute(HttpRequest req)
+        public async Task<EmailResponseDTO> Execute(EmailRequestDTO requestDTO)
         {
-            var requestDTO = await _requestDeserializer.Deserialize<EmailRequestDTO>(req);
 
             if (string.IsNullOrWhiteSpace(requestDTO.To) || string.IsNullOrWhiteSpace(requestDTO.Subject) || string.IsNullOrWhiteSpace(requestDTO.PlainTextContent))
             {
-                return new BadRequestObjectResult("Email request not valid");
+                throw new BadRequestException();
             }
 
             var emailRequest = MapToEmailRequest(requestDTO);
 
             var response = await _mediatr.Send(emailRequest);
 
-            return new OkObjectResult(response);
+            var responseDTO = new EmailResponseDTO
+            {
+                Response = response
+            };
+
+            return responseDTO;
         }
 
         private EmailRequest MapToEmailRequest(EmailRequestDTO requestDTO)

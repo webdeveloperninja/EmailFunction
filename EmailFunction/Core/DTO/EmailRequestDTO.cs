@@ -1,4 +1,4 @@
-﻿namespace EmailFunction.Controllers
+﻿namespace EmailFunction.Core.DTO
 {
     public class EmailRequestDTO
     {

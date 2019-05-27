@@ -1,7 +1,9 @@
 ﻿namespace EmailFunctionTests.Controllers
 {
     using EmailFunction.Controllers;
+    using EmailFunction.Core.DTO;
     using EmailFunction.Core.Entities;
+    using EmailFunction.Core.Exceptions;
     using EmailFunction.Core.Interfaces;
     using MediatR;
     using Microsoft.AspNetCore.Http;
@@ -47,11 +49,11 @@
                                                           request.PlainTextContent == requestDTO.PlainTextContent &&
                                                           request.Subject == requestDTO.Subject;
 
-            var result = await sut.Execute(CreateMockRequest(requestDTO).Object) as OkObjectResult;
+            var result = await sut.Execute(requestDTO);
 
             mediatorMock.Verify(m => m.Send(It.Is<EmailRequest>(r => matchesRequest(r)), It.IsAny<CancellationToken>()), Times.Once());
 
-            Assert.AreEqual(emailRequestResponse, result.Value);
+            Assert.AreEqual(emailRequestResponse, result.Response);
         }
 
         [TestMethod]
@@ -82,11 +84,10 @@
                                                           request.PlainTextContent == requestDTO.PlainTextContent &&
                                                           request.Subject == requestDTO.Subject;
 
-            var result = await sut.Execute(CreateMockRequest(requestDTO).Object) as BadRequestObjectResult;
+            
 
             mediatorMock.Verify(m => m.Send(It.Is<EmailRequest>(r => matchesRequest(r)), It.IsAny<CancellationToken>()), Times.Never());
-
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
+            await Assert.ThrowsExceptionAsync<BadRequestException>(() => sut.Execute(requestDTO));
         }
 
         [TestMethod]
@@ -112,7 +113,7 @@
 
             var sut = new EmailController(deserializerMock.Object, mediatorMock.Object, configurationMock.Object);
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.Execute(CreateMockRequest(requestDTO).Object));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.Execute(requestDTO));
         }
 
         [TestMethod]
@@ -138,7 +139,7 @@
 
             var sut = new EmailController(deserializerMock.Object, mediatorMock.Object, configurationMock.Object);
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.Execute(CreateMockRequest(requestDTO).Object));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.Execute(requestDTO));
         }
 
         private static Mock<HttpRequest> CreateMockRequest(object body)
