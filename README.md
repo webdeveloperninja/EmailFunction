@@ -1,6 +1,6 @@
 # EmailFunction
 
-Add the following variables to your local.settings.json or enviroment variables 
+Add the following variables to your `local.settings.json` or enviroment variables 
 ```
     "SENDGRID_KEY": {{ Your Sendgrid Key Here }},
     "FROM_ADDRESS": "{{ Your From Address }}",
